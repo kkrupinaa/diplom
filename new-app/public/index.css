@@ -2,12 +2,10 @@
     font-family: "CircularSpotify";
     src: url(./CircularSpUICyrOnly-Bold.30dc9fb2.woff2);
 }
-*{
+.app{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-.app{
     display: grid;
     height: 100vh;
     grid-template-columns: 200px 1fr;
@@ -53,7 +51,7 @@
 .content::-webkit-scrollbar-thumb:hover{
     background-color: darkgray;
 }
-.footer{
+.spoty-footer{
     height: 100px;
     grid-column: span 3;
     background-color: #181818;
@@ -88,18 +86,23 @@
 }
 .menu{
     list-style: none;
-    font-family:"CircularSpotify";
-    font-size: 13px;
-    color: #b3b3b3;
     display: block;
     padding: 0px 24px;
 }
 .menu-elem{
     height:40px;
     cursor: pointer;
+    color: #b3b3b3;
+    font-size: 14px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
 }
 .menu-elem:hover{
     color: white;
+}
+.menu-elem:hover .menu-icon{
+    fill:white;
 }
 .playlist{
     padding: 8px 24px;
@@ -108,12 +111,12 @@
     display: block;
     padding: 24px 16px 0px;
 }
-.section{
+.spoty-section{
     display: flex;
     flex-direction: column;
     margin-bottom: 16px;
 }
-.header{
+.spoty-header{
     background-image: linear-gradient(rgba(0,0,0,.6) 0,#121212 100%);
     min-width: 0;
     z-index: 2;
@@ -140,6 +143,15 @@
     gap: 24px;
     grid-template-rows: 1fr;
     grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+}
+.user-playlist{
+    padding: 8px 0px;
+    height: 100%;
+    width: 100%;
+}
+.user-block{
+    list-style: none;
+    padding:  8px 0px;
 }
 .music-box{
     background-color: rgb(24,24,24);
@@ -189,4 +201,12 @@
 .second-title{
     font-size:14px;
     color:#b3b3b3;
+}
+.menu-icon{
+    fill:#b3b3b3;
+    width: 24px;
+    height: 24px;
+}
+.menu-icon:hover{
+    fill:white;
 }
