@@ -97,6 +97,7 @@
     display: flex;
     gap: 16px;
     align-items: center;
+    text-decoration: none;
 }
 .menu-elem:hover{
     color: white;
@@ -209,4 +210,17 @@
 }
 .menu-icon:hover{
     fill:white;
+}
+.auth-button{
+    font-family:"CircularSpotify";
+    font-size: 24px;
+    color:white;
+    margin-bottom: 16px;
+    cursor: pointer;
+}
+.header-search{
+    border-radius: 500px;
+    height:40px;
+    padding:6px 48px;
+    text-overflow: ellipsis;
 }
