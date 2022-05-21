@@ -1,12 +1,12 @@
 import { SpotySectionList } from "./spotysectionlist.js";
 import { MusicBoxList } from "./musicboxlist.js";
-import { Api } from "./api.js";
-const $SpotySectionList = document.querySelector('.content-spacing');
-const mySpotySectionList = new SpotySectionList($SpotySectionList);
+import { API } from "./api.js";
+const spotySectionList = document.querySelector('.content-spacing');
+const mySpotySectionList = new SpotySectionList(spotySectionList);
 mySpotySectionList.add("Результат поиска");
-const $MusicBoxList = $SpotySectionList.querySelectorAll(".grid-content");
-const search_list = new MusicBoxList($MusicBoxList[0]);
-const SpotifyApi = new Api();
+const musicBoxList = spotySectionList.querySelectorAll(".grid-content");
+const search_list = new MusicBoxList(musicBoxList[0]);
+const SpotifyAPI = new API();
 /**
  * Ссылка для поискового запроса
  * @param album название альбома
@@ -14,15 +14,15 @@ const SpotifyApi = new Api();
  * @returns ссылка
  */
 function searchQuery(album = '', type) {
-    var url = "https://api.spotify.com/v1/search";
-    url += "?q=" + "remaster ";
+    var url = "https://api.spotify.com/v1/search" +
+        "?q=" + "remaster ";
     if (album != '') {
         url += "album:" + album;
     }
-    url += "&type=" + type;
-    url += "&market=ES";
-    url += "&limit=10";
-    url += "&offset=0";
+    url += "&type=" + type +
+        "&market=ES" +
+        "&limit=10" +
+        "&offset=0";
     return url;
 }
 /**
@@ -31,7 +31,7 @@ function searchQuery(album = '', type) {
  * @param type тип(альбом)
  */
 function search(album, type) {
-    SpotifyApi.fetchApi('GET', searchQuery(album, type), ProcessSearchResponce, null);
+    SpotifyAPI.fetchApi('GET', searchQuery(album, type), ProcessSearchResponce, null);
 }
 /**
  * Обработать ответ сервера на поисковый запрос
@@ -44,20 +44,20 @@ function ProcessSearchResponce() {
         search_list.deleteAll();
         for (let i = 0; i < array.length; i++) {
             const elem = array[i];
-            search_list.add(elem.images[1].url, elem.name, elem.artists[0].name, elem.tracks);
+            search_list.add(elem.images[1].url, elem.name, elem.artists[0].name, elem.tracks, elem.images[2].url);
         }
     }
     else {
-        if (this.status == 401) {
-            SpotifyApi.refreshAccessToken();
+        if (this.status === 401) {
+            SpotifyAPI.refreshAccessToken();
         }
         else {
             console.log(this.responseText);
         }
     }
 }
-const $searchInput = document.querySelector('.header-search');
-$searchInput.addEventListener('change', () => {
+const searchInput = document.querySelector('.header-search');
+searchInput.addEventListener('change', () => {
     const input = event === null || event === void 0 ? void 0 : event.target;
     const searchValue = input.value;
     localStorage.setItem('search_value', searchValue);
@@ -71,7 +71,7 @@ $searchInput.addEventListener('change', () => {
 function onPageLoad() {
     const searchValue = localStorage.getItem('search_value');
     search(searchValue, 'album');
-    $searchInput.value = searchValue;
+    searchInput.value = searchValue;
 }
 document.addEventListener("DOMContentLoaded", onPageLoad);
 //# sourceMappingURL=script2.js.map

@@ -2,12 +2,13 @@
  * Альбом
  */
 export class MusicBox {
-    constructor(photo, first_title, second_title, tracks) {
+    constructor(photo, first_title, second_title, tracks, footer_photo) {
         this.id = '${Date.now()}_${Math.floor(Math.random() * 1000)}';
         this.photo = photo;
         this.first_title = first_title;
         this.second_title = second_title;
         this.tracks = tracks;
+        this.footer_photo = footer_photo;
     }
     /**
      * HTML представление

@@ -1,17 +1,20 @@
 import { MusicBoxList } from "./musicboxlist.js"
 import { SpotySectionList } from "./spotysectionlist.js"
-import {Api} from  "./api.js"
+import {API} from  "./api.js"
+import './api.js'
+import * as APIConst from './consts.js'
+import * as tools from './tools.js'
 
 /**
  * Запрос кода авторизации
  */
 function requestAuthorization(){
-    var url="https://accounts.spotify.com/authorize"
-    url += "?client_id=" + SpotifyApi.client_id;
-    url += "&response_type=code";
-    url += "&redirect_uri=" + encodeURI(SpotifyApi.redirect_uri);
-    url += "&show_dialog=true";
-    url += "&scope=user-read-private user-read-email user-modify-playback-state user-read-playback-position user-library-read streaming user-read-playback-state user-read-recently-played playlist-read-private"
+    let url="https://accounts.spotify.com/authorize" +
+        "?client_id=" + APIConst.CLIENT_ID +
+        "&response_type=code" +
+        "&redirect_uri=" + encodeURI(APIConst.REDIRECT_URI) +
+        "&show_dialog=true" +
+        "&scope=user-read-private user-read-email user-modify-playback-state user-read-playback-position user-library-read streaming user-read-playback-state user-read-recently-played playlist-read-private"
     fetch(url,{
         method:'GET',
         mode:'no-cors'
@@ -23,7 +26,7 @@ function requestAuthorization(){
  * Обновить текущие устройства
  */
 function updateDevice(): void{
-    SpotifyApi.fetchApi('GET','https://api.spotify.com/v1/me/player/devices',processDevice,null)
+    SpotifyAPI.fetchApi('GET','https://api.spotify.com/v1/me/player/devices',processDevice,null)
 }
 /**
  * Обработать ответ сервера на запрос об устройствах
@@ -32,15 +35,16 @@ function updateDevice(): void{
 function processDevice(this:XMLHttpRequest){
     if (this.status===200){
         const data=JSON.parse(this.responseText)
-        removeChilds($devices)
-        data.devices.forEach((elem:any)=>addDevice(elem,$devices))
+        removeChilds(tools.devices)
+        localStorage.setItem('devicesAmount',data['devices'].length)
+        data.devices.forEach((elem:any)=>addDevice(elem,tools.devices))
     }
     else{
-        if (this.status==401){
-            SpotifyApi.refreshAccessToken()
+        if (this.status===401){
+            SpotifyAPI.refreshAccessToken()
         }
         else{
-            console.log(this.responseText);
+            alert(this.responseText);
         }
     }
 }
@@ -49,8 +53,9 @@ function processDevice(this:XMLHttpRequest){
  * @param parent кореневой узел
  */
 function removeChilds(parent:HTMLElement){
-    while(parent?.firstChild){
-        parent.removeChild(parent.firstChild)
+    let len=localStorage.getItem('devicesAmount') as string
+    for(let i=0;i<+len;i+=1){
+        parent.removeChild(parent.firstChild as ChildNode)
     }
 }
 /**
@@ -70,19 +75,19 @@ function addDevice(data:any,parent:HTMLElement){
  * @returns искомая ссылка
  */
 function recQuary():string{
-    let url="https://api.spotify.com/v1/recommendations"
-    url+="?limit=10"
-    url+="&market=ES"
-    url+="&seed_artists=2znSAMoC2z72k1BNWVMzKW"
-    url+="&seed_genres=pop%2Crap"
-    url+="&seed_tracks=1sIArrTWriaYJC2rz8CM4Z"
+    let url="https://api.spotify.com/v1/recommendations" +
+        "?limit=10" +
+        "&market=ES" +
+        "&seed_artists=2znSAMoC2z72k1BNWVMzKW" +
+        "&seed_genres=pop%2Crap" +
+        "&seed_tracks=1sIArrTWriaYJC2rz8CM4Z"
     return url
 }
 /**
  * Отправить запрос серверу на получение списка рекомендаций
  */
 function getRecommend(){
-    SpotifyApi.fetchApi('GET',recQuary(),processRecommendResponse,null)
+    SpotifyAPI.fetchApi('GET',recQuary(),processRecommendResponse,null)
 }
 /**
  * Обработка ответа сервера на запрос о рекомендациях
@@ -91,18 +96,18 @@ function getRecommend(){
 function processRecommendResponse(this:XMLHttpRequest): void{
     if (this.status===200){
         const data=JSON.parse(this.responseText)
-        recommend_list.deleteAll()
+        recommendList.deleteAll()
         for(let i=0;i<data.tracks.length;i++){
           const elem=data.tracks[i].album
-          recommend_list.add(elem.images[1].url,elem.name,elem.artists[0].name,elem.tracks)
+          recommendList.add(elem.images[1].url,elem.name,elem.artists[0].name,elem.tracks,elem.images[2].url)
         }
     }
     else{
-        if (this.status==401){
-            SpotifyApi.refreshAccessToken()
+        if (this.status===401){
+            SpotifyAPI.refreshAccessToken()
         }
         else{
-            console.log(this.responseText);
+            alert(this.responseText);
         }
     }
 }
@@ -110,60 +115,67 @@ function processRecommendResponse(this:XMLHttpRequest): void{
  * Отправить запрос серверу на получение списка новых релизов
  */
 function getNewReleases(){
-    SpotifyApi.fetchApi('GET','https://api.spotify.com/v1/browse/new-releases?limit=10',processNewReleases,null)
+    SpotifyAPI.fetchApi('GET','https://api.spotify.com/v1/browse/new-releases?limit=10',processNewReleases,null)
 }
+/**
+ *Обработка ответа сервера на запрос о новых релизах
+ * @param this ответ сервера
+ */
 function processNewReleases(this:XMLHttpRequest){
     if (this.status===200){
         const data=JSON.parse(this.responseText)
-        rec_listned.deleteAll()
+        recListned.deleteAll()
         for(let i=0;i<data.albums.items.length;i++){
           const elem=data.albums.items[i]
-          rec_listned.add(elem.images[1].url,elem.name,elem.artists[0].name,elem.tracks)
+          recListned.add(elem.images[1].url,elem.name,elem.artists[0].name,elem.tracks,elem.images[2].url)
         }
     }
     else{
-        if (this.status==401){
-            SpotifyApi.refreshAccessToken()
+        if (this.status===401){
+            SpotifyAPI.refreshAccessToken()
         }
         else{
-            console.log(this.responseText);
+            alert(this.responseText);
         }
     }
 }
+/**
+ * Функция обработчик перезагрузки страницы
+ */
+function OnPageLoad(){
+    if (window.location.search.length>0){
+        handleRedirect()
+    }
+}
+/**
+ *Получает токен сразу после авторизации
+ */
+function handleRedirect(){
+    const CODE=SpotifyAPI.getCode()
+    SpotifyAPI.requestAccessToken(SpotifyAPI.fetchAccessToken(CODE))
+    window.history.pushState("", "", APIConst.REDIRECT_URI);
+    localStorage.setItem('devicesAmount','0')
 
-/*function play(total:number){
-    let body = {};
-    body.context_uri = "spotify:album:1yKeJKgzpRKm7LwHZIQUu9";
-    body.offset = {};
-    body.offset.position = 1
-    body.position_ms = 0;
-    let xhr = new XMLHttpRequest()
-    xhr.open('PUT', 'https://api.spotify.com/v1/me/player/play"' + "?device_id=" + localStorage.getItem('device_id'), true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('access_token'));
-    xhr.send(JSON.stringify(body));
-}*/
+}
+document.addEventListener("DOMContentLoaded",OnPageLoad)
 //Создаем список тематических секций на главной странице
-const $SpotySectionList=document.querySelector('.content-spacing') as HTMLElement
-const mySpotySectionList=new SpotySectionList($SpotySectionList)
-const $devices=document.createElement('devices') as HTMLElement
+const spotySectionList=document.querySelector('.content-spacing') as HTMLElement
+const mySpotySectionList=new SpotySectionList(spotySectionList)
+//const devices=document.createElement('devices') as HTMLElement
 
 mySpotySectionList.add("Новые релизы")
 mySpotySectionList.add("Рекомендации")
 
 //Добавление музыки в секции
-const $MusicBoxList=$SpotySectionList.querySelectorAll(".grid-content")
-const rec_listned=new MusicBoxList($MusicBoxList[0] as HTMLElement)
-const recommend_list=new MusicBoxList($MusicBoxList[1] as HTMLElement)
+const musicBoxList=spotySectionList.querySelectorAll(".grid-content")
+const recListned=new MusicBoxList(musicBoxList[0] as HTMLElement)
+const recommendList=new MusicBoxList(musicBoxList[1] as HTMLElement)
 
-const SpotifyApi=new Api()
+const SpotifyAPI=new API()
 
 const auth_button=document.querySelector('.auth-button') as HTMLElement
 auth_button.addEventListener('click', requestAuthorization)
-const CODE=SpotifyApi.get_code()
-SpotifyApi.RequestAccessToken(SpotifyApi.fetchAccessToken(CODE))
-window.history.pushState("", "", SpotifyApi.redirect_uri);
-SpotifyApi.RequestAccessToken(SpotifyApi.refreshAccessToken())
+SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken())
 
 updateDevice()
 getRecommend()

@@ -3,16 +3,18 @@
  */
 export class MusicBox{
     photo:string
+    footer_photo:string
     private id:string
     first_title:string
     second_title:string
     tracks:JSON
-    constructor(photo:string,first_title:string, second_title:string,tracks:JSON){
+    constructor(photo:string,first_title:string, second_title:string,tracks:JSON,footer_photo:string){
         this.id='${Date.now()}_${Math.floor(Math.random() * 1000)}'
         this.photo=photo
         this.first_title=first_title
         this.second_title=second_title
         this.tracks=tracks
+        this.footer_photo=footer_photo
     }
     /**
      * HTML представление
