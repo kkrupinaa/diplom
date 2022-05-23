@@ -10,30 +10,16 @@ export default function Content(){
     const[newReleasesList,setNewReleasesList]=useState<IMusic[]>([])
     const[recommendList,setRecommendList]=useState<IMusic[]>([])
     useEffect(()=>{
-        let newReleases:ISection
-        newReleases={
-            text:"Новые релизы",
-            id:'1',
-            musicBoxList:newReleasesList
-        }
-        let recomendation:ISection
-        recomendation={
-            text:'Рекомендации',
-            id:'2',
-            musicBoxList:recommendList
-        }
-        setAllSections([newReleases,recomendation])
-
         if (window.location.search.length>0){
             const CODE=myAPI.getCode()
             myAPI.requestAccessToken(myAPI.fetchAccessToken(CODE))
             window.history.pushState("", "", APIConst.REDIRECT_URI);
             localStorage.setItem('devicesAmount','0')
-            console.log('n')
         }
-        myAPI.requestAccessToken(myAPI.refreshAccessToken())
-        getNewReleases()
-        getRecommend()
+        if (localStorage.getItem('refresh_token')!==null){
+            getNewReleases()
+            getRecommend()
+        }
 
         function getNewReleases(){
             myAPI.fetchApi('GET','https://api.spotify.com/v1/browse/new-releases?limit=10',processNewReleases,null)
@@ -95,6 +81,7 @@ export default function Content(){
                     newList.push(newElem)
                 }
                 setRecommendList(newList)
+                console.log(recommendList)
             }
             else{
                 if (this.status===401){
@@ -105,6 +92,19 @@ export default function Content(){
                 }
             }
         }
+        let newReleases:ISection
+        newReleases={
+            text:"Новые релизы",
+            id:'1',
+            musicBoxList:newReleasesList
+        }
+        let recomendation:ISection
+        recomendation={
+            text:'Рекомендации',
+            id:'2',
+            musicBoxList:recommendList
+        }
+        setAllSections([newReleases,recomendation])
     },[])
     return(
     <main className="content">
@@ -117,7 +117,7 @@ export default function Content(){
         <div className="content-spacing">
             {
                 allSections.map((item)=>(
-                    <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList}/>
+                    <Section text={item.text} key={item.id} musicBoxList={newReleasesList}/>
                 )
                 )
             }
