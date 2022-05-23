@@ -168,7 +168,6 @@ const recommendList = new MusicBoxList(musicBoxList[1]);
 const SpotifyAPI = new API();
 const auth_button = document.querySelector('.auth-button');
 auth_button.addEventListener('click', requestAuthorization);
-SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken());
 updateDevice();
 getRecommend();
 getNewReleases();

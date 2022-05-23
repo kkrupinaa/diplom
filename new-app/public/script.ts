@@ -98,8 +98,8 @@ function processRecommendResponse(this:XMLHttpRequest): void{
         const data=JSON.parse(this.responseText)
         recommendList.deleteAll()
         for(let i=0;i<data.tracks.length;i++){
-          const elem=data.tracks[i].album
-          recommendList.add(elem.images[1].url,elem.name,elem.artists[0].name,elem.tracks,elem.images[2].url)
+            const elem=data.tracks[i].album
+            recommendList.add(elem.images[1].url,elem.name,elem.artists[0].name,elem.tracks,elem.images[2].url)
         }
     }
     else{
@@ -155,7 +155,6 @@ function handleRedirect(){
     SpotifyAPI.requestAccessToken(SpotifyAPI.fetchAccessToken(CODE))
     window.history.pushState("", "", APIConst.REDIRECT_URI);
     localStorage.setItem('devicesAmount','0')
-
 }
 document.addEventListener("DOMContentLoaded",OnPageLoad)
 //Создаем список тематических секций на главной странице
@@ -175,7 +174,7 @@ const SpotifyAPI=new API()
 
 const auth_button=document.querySelector('.auth-button') as HTMLElement
 auth_button.addEventListener('click', requestAuthorization)
-SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken())
+//SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken())
 
 updateDevice()
 getRecommend()

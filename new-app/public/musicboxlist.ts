@@ -38,6 +38,7 @@ export class MusicBoxList{
         // Add event listener to play/pause track
         const list=this.container.querySelectorAll('.hidden-img') as NodeListOf<HTMLImageElement>
         const elem=list[list.length-1] as HTMLImageElement
+        
         elem.addEventListener('click',()=>{
             if (elem.src=='http://localhost:3000/play-button.svg'){
                 const all_buttons=document.querySelectorAll('.hidden-img') as NodeListOf<HTMLImageElement>
