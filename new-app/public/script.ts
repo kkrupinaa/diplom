@@ -5,6 +5,10 @@ import './api.js'
 import * as APIConst from './consts.js'
 import * as tools from './tools.js'
 
+type myDevice={
+    id:string;
+}
+
 /**
  * Запрос кода авторизации
  */
@@ -37,7 +41,7 @@ function processDevice(this:XMLHttpRequest){
         const data=JSON.parse(this.responseText)
         removeChilds(tools.devices)
         localStorage.setItem('devicesAmount',data['devices'].length)
-        data.devices.forEach((elem:any)=>addDevice(elem,tools.devices))
+        data.devices.forEach((elem:myDevice)=>addDevice(elem,tools.devices))
     }
     else{
         if (this.status===401){
@@ -63,7 +67,7 @@ function removeChilds(parent:HTMLElement){
  * @param data данные о новом устройстве
  * @param parent корневой узел
  */
-function addDevice(data:any,parent:HTMLElement){
+function addDevice(data:myDevice,parent:HTMLElement){
     let device=document.createElement('device')
     device.id=data.id
     parent.id=device.id
@@ -96,6 +100,7 @@ function getRecommend(){
 function processRecommendResponse(this:XMLHttpRequest): void{
     if (this.status===200){
         const data=JSON.parse(this.responseText)
+        //recommendList.container.querySelector('hidden-img')?.removeEventListener('click')
         recommendList.deleteAll()
         for(let i=0;i<data.tracks.length;i++){
             const elem=data.tracks[i].album
@@ -104,7 +109,7 @@ function processRecommendResponse(this:XMLHttpRequest): void{
     }
     else{
         if (this.status===401){
-            SpotifyAPI.refreshAccessToken()
+            SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken())
         }
         else{
             alert(this.responseText);
@@ -126,13 +131,13 @@ function processNewReleases(this:XMLHttpRequest){
         const data=JSON.parse(this.responseText)
         recListned.deleteAll()
         for(let i=0;i<data.albums.items.length;i++){
-          const elem=data.albums.items[i]
-          recListned.add(elem.images[1].url,elem.name,elem.artists[0].name,elem.tracks,elem.images[2].url)
+            const elem=data.albums.items[i]
+            recListned.add(elem.images[1].url,elem.name,elem.artists[0].name,elem.tracks,elem.images[2].url)
         }
     }
     else{
         if (this.status===401){
-            SpotifyAPI.refreshAccessToken()
+            SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken())
         }
         else{
             alert(this.responseText);
@@ -174,8 +179,6 @@ const SpotifyAPI=new API()
 
 const auth_button=document.querySelector('.auth-button') as HTMLElement
 auth_button.addEventListener('click', requestAuthorization)
-//SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken())
-
 updateDevice()
 getRecommend()
 getNewReleases()

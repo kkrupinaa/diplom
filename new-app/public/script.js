@@ -94,6 +94,7 @@ function getRecommend() {
 function processRecommendResponse() {
     if (this.status === 200) {
         const data = JSON.parse(this.responseText);
+        //recommendList.container.querySelector('hidden-img')?.removeEventListener('click')
         recommendList.deleteAll();
         for (let i = 0; i < data.tracks.length; i++) {
             const elem = data.tracks[i].album;
@@ -102,7 +103,7 @@ function processRecommendResponse() {
     }
     else {
         if (this.status === 401) {
-            SpotifyAPI.refreshAccessToken();
+            SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken());
         }
         else {
             alert(this.responseText);
@@ -130,7 +131,7 @@ function processNewReleases() {
     }
     else {
         if (this.status === 401) {
-            SpotifyAPI.refreshAccessToken();
+            SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken());
         }
         else {
             alert(this.responseText);

@@ -86,7 +86,7 @@ export class API{
      * @param callback обработчик ответа запроса
      * @param body тело запроса
      */
-    fetchApi(method:string,url:string,callback:()=>void,body:any): void {
+    fetchApi(method:string,url:string,callback:()=>void,body:string|null): void {
         this.access_token=localStorage.getItem('access_token')
         let xhr=new XMLHttpRequest()
         xhr.open(method,url,true)

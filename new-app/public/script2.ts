@@ -17,7 +17,7 @@ const SpotifyAPI=new API()
  * @returns ссылка
  */
 function searchQuery(album='',type:string){
-    var url="https://api.spotify.com/v1/search" +
+    let url="https://api.spotify.com/v1/search" +
         "?q="+"remaster "
     if (album!=''){
         url+="album:"+album
@@ -52,10 +52,10 @@ function ProcessSearchResponce(this:XMLHttpRequest){
     }
     else{
     if (this.status===401){
-        SpotifyAPI.refreshAccessToken()
+        SpotifyAPI.requestAccessToken(SpotifyAPI.refreshAccessToken())
     }
     else{
-        console.log(this.responseText);
+        alert(this.responseText);
     }
     }
 }
