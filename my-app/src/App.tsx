@@ -11,6 +11,7 @@ import Media from './components/Media';
 import { IFooter, ISection } from './components/interfaces';
 import {footerContext,commonContext, sectionContext} from './Context'
 import { API } from "./components/API/API";
+import NotFound from "./components/NotFound";
 
 function App() {
   const [footerStyle,setFooterStyle]=useState<IFooter>({firstTitle:'Наведите на трэк',secondTitle:'Нажмите Play',photo:default_photo,liked:false})
@@ -23,6 +24,9 @@ function App() {
       setFooterStyle(JSON.parse(savedFooterStyle))
     }
   },[])
+  function handlePlaylistItemsResponce(this:XMLHttpRequest){
+    console.log(this.responseText)
+  }
   useEffect(()=>{
     myAPI.fetchApi('GET','https://api.spotify.com/v1/me/playlists',handlePlaylistResponce,null)
     function handlePlaylistResponce(this:XMLHttpRequest){
@@ -33,6 +37,7 @@ function App() {
           for (let i=0; i<data.items.length;i++){
             let elem=data.items[i]
             let newElem:ISection
+            myAPI.fetchApi('GET',elem.href+'/tracks',handlePlaylistItemsResponce,myAPI.playlistQuery())
             newElem={
               text:elem.name,
               musicBoxList:[],
@@ -55,6 +60,7 @@ function App() {
               <Route path="/callback" element={<Content/>}/>
               <Route path="/search" element={<Search/>}/>
               <Route path="/media" element={<Media/>}/>
+              <Route path="*" element={<NotFound/>}/>
             </Routes>
           </sectionContext.Provider>
         </commonContext.Provider>

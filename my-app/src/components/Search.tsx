@@ -90,7 +90,7 @@ export default function Search(){
         <div className="content-spacing">
             {
                 searchSections.map((item)=>(
-                    <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList}/>
+                    <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id}/>
                 ))
             }
         </div>

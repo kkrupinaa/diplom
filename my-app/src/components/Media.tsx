@@ -12,7 +12,7 @@ export default function Media(){
         <div className="content-spacing">
             {
                 mediaSections.map((item)=>(
-                    <Section text={item.text} musicBoxList={[]} key={item.id}/>
+                    <Section text={item.text} musicBoxList={[]} key={item.id} id={item.id}/>
                 ))
             }
         </div>

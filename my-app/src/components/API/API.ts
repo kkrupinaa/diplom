@@ -132,14 +132,22 @@ export class API{
      */
     searchQuery(album='',type:string){
         let url="https://api.spotify.com/v1/search" +
-            "?q="+"remaster "
-        if (album!=''){
+        "?q="+"remaster "
+        if (album!==''){
             url+="album:"+album
         }
         url+="&type="+type +
             "&market=ES" +
             "&limit=10" +
             "&offset=0"
+        return url
+    }
+
+    playlistQuery():string{
+        let url="?market=ES"+
+        "&fields=items(track(name,href,album(name,href)))" +
+        "&limit=10" +
+        "&offset=5"
         return url
     }
 }

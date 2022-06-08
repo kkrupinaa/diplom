@@ -119,7 +119,7 @@ export default function Content(){
         <div className="content-spacing">
             {
                 allSections.map((item)=>(
-                    <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList}/>
+                    <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id}/>
                 )
                 )
             }

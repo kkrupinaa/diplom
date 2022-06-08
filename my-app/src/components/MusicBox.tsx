@@ -3,7 +3,8 @@ import pauseButton from "./pause.svg"
 import { useContext, useRef, useState } from "react"
 import { IFooter } from "./interfaces"
 import { commonContext, footerContext} from "../Context"
-export default function MusicBox(props:{photo:string,first_title:string, second_title:string,footer_photo:string,id:string}){
+import { IMusic } from "./interfaces"
+export default function MusicBox(props:IMusic){
     const [playState,setPlayState]=useState(playButton)
     const refContainer=useRef(null)
     let setFooterStyle=useContext(footerContext)

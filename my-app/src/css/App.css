@@ -208,10 +208,14 @@
     padding: 0px 0px 4px;
     z-index: 1;
     max-width:100%;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
 }
 .second-title{
     font-size:14px;
     color:#b3b3b3;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
 }
 .menu-icon{
     fill:#b3b3b3;

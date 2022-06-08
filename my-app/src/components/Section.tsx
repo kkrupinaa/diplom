@@ -1,7 +1,7 @@
-import { IMusic } from "./interfaces";
+import { ISection } from "./interfaces";
 import MusicBox from "./MusicBox";
 
-export default function Section(props:{text:string, musicBoxList:IMusic[]}){
+export default function Section(props:ISection){
     return(
     <section className="spoty-section">
         <div className="text-content">{props.text}</div>
