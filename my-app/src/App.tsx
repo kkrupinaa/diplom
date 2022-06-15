@@ -62,7 +62,7 @@ function App() {
         setMediaSections(newList)
       }
     }
-  }, [])
+  }, [curList])
   return (
     <div className='app'>
       <Accordion />
