@@ -1,5 +1,5 @@
-export default function NotFound(){
-    return(
+export default function NotFound() {
+    return (
         <main className="content">
             <header className="spoty__header">
                 <div className="hidden-bar"></div>

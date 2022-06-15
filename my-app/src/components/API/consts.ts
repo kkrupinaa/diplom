@@ -10,3 +10,11 @@ export const CLIENT_ID='b6eb20f71b544fcc9c0a2f279857aeed'
  *Ссылка переадресации
 */
 export const REDIRECT_URI='http://localhost:3000/callback'
+
+/**
+ *Константы статуса ответа сервера
+ */
+export const HTTP_CODES={
+    NO_TOKEN:401,
+    OK:200
+}
