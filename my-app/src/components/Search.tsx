@@ -76,7 +76,8 @@ export default function Search() {
         searchSection = {
             text: 'Результаты поиска',
             id: '1',
-            musicBoxList: searchList
+            musicBoxList: searchList,
+            href: ''
         }
         setSearchSections([searchSection])
     }, [searchList])
@@ -90,7 +91,7 @@ export default function Search() {
             <div className="content-spacing">
                 {
                     searchSections.map((item) => (
-                        <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id} />
+                        <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id} href={''} />
                     ))
                 }
             </div>

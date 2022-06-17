@@ -2,6 +2,7 @@ export interface ISection {
     text: string
     musicBoxList: IMusic[]
     id: string
+    href:string
 }
 export interface IMusic {
     photo: string

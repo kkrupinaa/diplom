@@ -96,13 +96,15 @@ export default function Content() {
         newReleases = {
             text: "Новые релизы",
             id: '1',
-            musicBoxList: newReleasesList
+            musicBoxList: newReleasesList,
+            href: ''
         }
         let recomendation: ISection
         recomendation = {
             text: 'Рекомендации',
             id: '2',
-            musicBoxList: recommendList
+            musicBoxList: recommendList,
+            href: ''
         }
         setAllSections([newReleases, recomendation])
     }, [recommendList, newReleasesList])
@@ -117,7 +119,7 @@ export default function Content() {
             <div className="content-spacing">
                 {
                     allSections.map((item) => (
-                        <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id} />
+                        <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id} href={''} />
                     )
                     )
                 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { ISection } from "./interfaces";
 import MusicBox from "./MusicBox";
 
