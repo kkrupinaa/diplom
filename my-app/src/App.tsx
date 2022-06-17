@@ -17,8 +17,8 @@ function App() {
   const [curTrack, setCurtrack] = useState<HTMLImageElement>(new Image())
   const [mediaSections] = useState<ISection[]>([])
   useEffect(() => {
-    let savedFooterStyle = localStorage.getItem('footerStyle')
-    if (savedFooterStyle != null) {
+    const savedFooterStyle = localStorage.getItem('footerStyle')
+    if (savedFooterStyle !== null) {
       setFooterStyle(JSON.parse(savedFooterStyle))
     }
   }, [])
