@@ -1,1 +1,0 @@
-export const devices=document.createElement('devices') as HTMLElement
