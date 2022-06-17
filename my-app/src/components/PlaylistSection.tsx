@@ -24,6 +24,14 @@ export default function SectionPlaylist(props: ISection) {
             }
             setCurMusic(newList)
         }
+        else {
+            if (this.status === APIConst.HTTP_CODES.NO_TOKEN) {
+                API.requestAccessToken(API.refreshAccessToken())
+            }
+            else {
+                alert(this.responseText);
+            }
+        }
     }
     function onNameClick() {
         if (props.href !== '') {

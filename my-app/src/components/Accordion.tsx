@@ -67,10 +67,6 @@ export default function Accordion() {
                         </Link>
                     </li>
                 </ul>
-                <ul className="menu__playlist">
-                    <li className="menu__elem">Создать плейлист</li>
-                    <li className="menu__elem">Любимые треки</li>
-                </ul>
             </nav>
         </aside>
     )

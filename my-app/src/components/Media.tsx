@@ -25,11 +25,20 @@ export default function Media() {
                 }
                 setMediaSections(newList)
             }
+            else {
+                if (this.status === APIConst.HTTP_CODES.NO_TOKEN) {
+                    API.requestAccessToken(API.refreshAccessToken())
+                }
+                else {
+                    alert(this.responseText);
+                }
+            }
         }
     }, [])
     return (
         <main className="content">
             <header className="spoty__header">
+                <div className="welcome-text">Нажмите на название плейлиста, чтобы просмотреть песни</div>
                 <div className="hidden-bar"></div>
             </header>
             <div className="content-spacing">
