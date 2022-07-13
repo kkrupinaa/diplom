@@ -17,3 +17,7 @@ export interface IFooter {
     photo: string
     liked: boolean
 }
+
+export interface ITrack{
+    album:object
+}

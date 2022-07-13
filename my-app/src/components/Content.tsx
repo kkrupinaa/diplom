@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react"
-import { IMusic, ISection } from "./interfaces"
+import { IMusic, ISection, ITrack } from "./interfaces"
 import Section from "./Section"
 import * as APIConst from "./API/consts"
 import { API } from "./API/API"
 import { Link } from "react-router-dom"
 
-function UseAPI(setFunc:React.Dispatch<React.SetStateAction<IMusic[]>>,type:'album'| 'track'):any{
-    return function processResponce(this:XMLHttpRequest){
+function UseAPI(setFunc: React.Dispatch<React.SetStateAction<IMusic[]>>, type: 'album' | 'track'): any {
+    return function processResponce(this: XMLHttpRequest) {
         if (this.status === APIConst.HTTP_CODES.OK) {
             const data = JSON.parse(this.responseText)
             let newList: IMusic[] = []
-            let limit = (type==='album') ? data.albums.items.length : data.tracks.length
+            const [limit, elements] = (type === 'album') ? [
+                data.albums.items.length,
+                data.albums.items
+            ] : [
+                data.tracks.length,
+                data.tracks.map((track:ITrack) => track.album)
+            ];
             for (let i = 0; i < limit; i++) {
-                const elem = (type ==='album')? data.albums.items[i] : data.tracks[i].album
-                let newElem:IMusic
-                newElem = {
+                const elem = elements[i]
+                let newElem: IMusic = {
                     photo: elem.images[1].url,
                     footer_photo: elem.images[2].url,
                     id: String(i),
@@ -37,9 +42,14 @@ function UseAPI(setFunc:React.Dispatch<React.SetStateAction<IMusic[]>>,type:'alb
 }
 
 export default function Content() {
-    const [allSections, setAllSections] = useState<ISection[]>([])
     const [newReleasesList, setNewReleasesList] = useState<IMusic[]>([])
     const [recommendList, setRecommendList] = useState<IMusic[]>([])
+    function getNewReleases() {
+        API.fetchApi('GET', 'https://api.spotify.com/v1/browse/new-releases?limit=10', UseAPI(setNewReleasesList, 'album'), null)
+    }
+    function getRecommend() {
+        API.fetchApi('GET', API.recQuary(), UseAPI(setRecommendList, 'track'), null)
+    }
     useEffect(() => {
         if (window.location.search.length > 0) {
             const CODE = API.getCode()
@@ -51,30 +61,20 @@ export default function Content() {
             getNewReleases()
             getRecommend()
         }
-        function getNewReleases() {
-            API.fetchApi('GET', 'https://api.spotify.com/v1/browse/new-releases?limit=10', UseAPI(setNewReleasesList,'album'), null)
-        }
-        function getRecommend() {
-            API.fetchApi('GET', API.recQuary(), UseAPI(setRecommendList,'track'), null)
-        }
     }, [])
-    useEffect(() => {
-        let newReleases: ISection
-        newReleases = {
-            text: "Новые релизы",
-            id: '1',
-            musicBoxList: newReleasesList,
-            href: ''
-        }
-        let recomendation: ISection
-        recomendation = {
-            text: 'Рекомендации',
-            id: '2',
-            musicBoxList: recommendList,
-            href: ''
-        }
-        setAllSections([newReleases, recomendation])
-    }, [recommendList, newReleasesList])
+    const newReleases:ISection = {
+        text: "Новые релизы",
+        id: '1',
+        musicBoxList: newReleasesList,
+        href: ''
+    }
+    const recomendation:ISection = {
+        text: 'Рекомендации',
+        id: '2',
+        musicBoxList: recommendList,
+        href: ''
+    }
+    const  allSections:ISection[]=[newReleases,recomendation]
     return (
         <main className="content">
             <header className="spoty__header">
