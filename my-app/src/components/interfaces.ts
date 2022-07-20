@@ -19,5 +19,31 @@ export interface IFooter {
 }
 
 export interface ITrack{
-    album:object
+    album:IAlbum
+    images:{
+        url:string
+    }[]
+    name:string
+    artists:{
+        name:string
+    }[]
+    id:string
+}
+
+export interface IAlbum{
+    images:{
+        url:string
+    }[]
+}
+
+export interface IPlaylist{
+    track:ITrack
+}
+
+export interface IData{
+    tracks:ITrack[]
+    albums:{
+        items: ITrack[]
+    }
+    items:IPlaylist[]
 }
