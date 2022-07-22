@@ -2,6 +2,7 @@ import { useState } from "react"
 import { IMusic, ISection } from "./interfaces"
 import { API } from "./API/API"
 import Section from "./Section"
+import { Album, musicList } from "./classes"
 
 export default function Search() {
     const [searchList, setSearchList] = useState<IMusic[]>([])
@@ -35,7 +36,7 @@ export default function Search() {
      * @param type тип(альбом)
      */
     function search(album: string, type: string) {
-        API.fetchApi('GET', API.searchQuery(album, type), API.UseAPI(setSearchList,'album'), null)
+        API.fetchApi('GET', API.searchQuery(album, type), API.UseAPI(new musicList(setSearchList,new Album())), null)
     }
     let searchSection: ISection = {
         text: 'Результаты поиска',

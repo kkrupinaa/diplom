@@ -47,3 +47,11 @@ export interface IData{
     }
     items:IPlaylist[]
 }
+
+export interface ISectionData{
+    items:{
+        name:string
+        id:string
+        href:string
+    }[]
+}

@@ -1,4 +1,4 @@
-import { IData, IMusic, IPlaylist, ISection, ITrack } from '../interfaces'
+import { dataList } from '../classes'
 import * as APIConst from './consts'
 /**
  * Класс для работы с Api
@@ -146,60 +146,11 @@ export class API {
             "&offset=5"
         return url
     }
-    static ProcessIMusicData(data: IData, type: 'album' | 'track' | 'playlist'): IMusic[] {
-        let newList: IMusic[] = []
-        let elements:ITrack[]=[]
-        let photo, footer_photo, first_title, second_title, id: string[] = []
-        if (type === 'album') {
-            elements = data.albums.items
-            photo = elements.map((elem: ITrack) => elem.images[1].url)
-            footer_photo = elements.map((elem: ITrack) => elem.images[2].url)
-        }
-        else {
-            if (type === 'playlist') {
-                elements = data.items.map((elem: IPlaylist) => elem.track)
-            }
-            else elements = data.tracks
-            photo = elements.map((elem: ITrack) => elem.album.images[1].url)
-            footer_photo = elements.map((elem: ITrack) => elem.album.images[2].url)
-        }
-        first_title = elements.map((elem: ITrack) => elem.name)
-        second_title = elements.map((elem: ITrack) => elem.artists[0].name)
-        id = elements.map((elem: ITrack) => elem.id)
-        for (let i = 0; i < elements.length; i++) {
-            let newElem: IMusic = {
-                photo: photo[i],
-                footer_photo: footer_photo[i],
-                id: id[i],
-                first_title: first_title[i],
-                second_title: second_title[i]
-            }
-            newList.push(newElem)
-        }
-        return newList
-    }
-    static ProcessISectionData(data: any): ISection[] {
-        let newList: ISection[] = []
-        for (let i = 0; i < data.items.length; i++) {
-            let elem = data.items[i]
-            let newElem: ISection = {
-                text: elem.name,
-                musicBoxList: [],
-                id: elem.id,
-                href: elem.href
-            }
-            newList.push(newElem)
-        }
-        return newList
-    }
-    static UseAPI(setFunc: Function, type: 'album' | 'track' | 'playlist' | 'section'): any {
+    static UseAPI(downloadData:dataList): any {
         return function processResponce(this: XMLHttpRequest) {
             if (this.status === APIConst.HTTP_CODES.OK) {
                 const data = JSON.parse(this.responseText)
-                if (type !== 'section') {
-                    setFunc(API.ProcessIMusicData(data, type))
-                }
-                else setFunc(API.ProcessISectionData(data))
+                downloadData.formList(data)
             }
             else {
                 if (this.status === APIConst.HTTP_CODES.NO_TOKEN) {

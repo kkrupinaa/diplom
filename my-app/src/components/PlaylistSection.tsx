@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { API } from "./API/API";
+import { musicList, Playlist } from "./classes";
 import {ISection } from "./interfaces";
 import MusicBox from "./MusicBox";
 
@@ -7,7 +8,7 @@ export default function SectionPlaylist(props: ISection) {
     const [curMusic, setCurMusic] = useState(props.musicBoxList)
     function onNameClick() {
         if (props.href !== '') {
-            API.fetchApi('GET', props.href + '/tracks', API.UseAPI(setCurMusic,'playlist'), API.playlistQuery())
+            API.fetchApi('GET', props.href + '/tracks', API.UseAPI(new musicList(setCurMusic,new Playlist())), API.playlistQuery())
         }
     }
     return (

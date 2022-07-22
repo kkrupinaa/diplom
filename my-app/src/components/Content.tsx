@@ -4,15 +4,16 @@ import Section from "./Section"
 import * as APIConst from "./API/consts"
 import { API } from "./API/API"
 import { Link } from "react-router-dom"
+import { Album, musicList, Track } from "./classes"
 
 export default function Content() {
     const [newReleasesList, setNewReleasesList] = useState<IMusic[]>([])
     const [recommendList, setRecommendList] = useState<IMusic[]>([])
     function getNewReleases() {
-        API.fetchApi('GET', 'https://api.spotify.com/v1/browse/new-releases?limit=10', API.UseAPI(setNewReleasesList,'album'), null)
+        API.fetchApi('GET', 'https://api.spotify.com/v1/browse/new-releases?limit=10', API.UseAPI(new musicList(setNewReleasesList,new Album())), null)
     }
     function getRecommend() {
-        API.fetchApi('GET', API.recQuary(), API.UseAPI(setRecommendList,'track'), null)
+        API.fetchApi('GET', API.recQuary(), API.UseAPI(new musicList(setRecommendList,new Track())), null)
     }
     useEffect(() => {
         if (window.location.search.length > 0) {

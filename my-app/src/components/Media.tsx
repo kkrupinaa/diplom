@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react"
 import { SectionContext } from "../Context"
 import { API } from "./API/API"
+import { sectionList } from "./classes"
 import SectionPlaylist from "./PlaylistSection"
 
 export default function Media() {
     const [mediaSections, setMediaSections] = useState(useContext(SectionContext))
     useEffect(() => {
-        API.fetchApi('GET', 'https://api.spotify.com/v1/me/playlists', API.UseAPI(setMediaSections,'section'), null)
+        API.fetchApi('GET', 'https://api.spotify.com/v1/me/playlists', API.UseAPI(new sectionList(setMediaSections)), null)
     }, [])
     return (
         <main className="content">
