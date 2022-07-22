@@ -17,3 +17,41 @@ export interface IFooter {
     photo: string
     liked: boolean
 }
+
+export interface ITrack{
+    album:IAlbum
+    images:{
+        url:string
+    }[]
+    name:string
+    artists:{
+        name:string
+    }[]
+    id:string
+}
+
+export interface IAlbum{
+    images:{
+        url:string
+    }[]
+}
+
+export interface IPlaylist{
+    track:ITrack
+}
+
+export interface IData{
+    tracks:ITrack[]
+    albums:{
+        items: ITrack[]
+    }
+    items:IPlaylist[]
+}
+
+export interface ISectionData{
+    items:{
+        name:string
+        id:string
+        href:string
+    }[]
+}

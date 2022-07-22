@@ -1,3 +1,4 @@
+import { dataList } from '../classes'
 import * as APIConst from './consts'
 /**
  * Класс для работы с Api
@@ -144,5 +145,21 @@ export class API {
             "&limit=10" +
             "&offset=5"
         return url
+    }
+    static UseAPI(downloadData:dataList): any {
+        return function processResponce(this: XMLHttpRequest) {
+            if (this.status === APIConst.HTTP_CODES.OK) {
+                const data = JSON.parse(this.responseText)
+                downloadData.formList(data)
+            }
+            else {
+                if (this.status === APIConst.HTTP_CODES.NO_TOKEN) {
+                    API.requestAccessToken(API.refreshAccessToken())
+                }
+                else {
+                    alert(this.responseText);
+                }
+            }
+        }
     }
 }
