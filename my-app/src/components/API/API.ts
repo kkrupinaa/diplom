@@ -41,7 +41,7 @@ export class API {
      * @param code код авторизации
      * @returns тело запроса
      */
-    static fetchAccessToken(code: string | null) {
+    static fetchAccessToken(code: string) {
         let body = "code=" + code +
             "&grant_type=authorization_code" +
             "&redirect_uri=" + encodeURI(APIConst.REDIRECT_URI);
@@ -83,7 +83,7 @@ export class API {
      * @param callback обработчик ответа запроса
      * @param body тело запроса
      */
-    static fetchApi(method: string, url: string, callback: () => void, body: string | null): void {
+    static fetchApi(url: string, callback: () => void, body?: string,method:string='GET'): void {
         this.accessToken = localStorage.getItem('access_token')
         const xhr = new XMLHttpRequest()
         xhr.open(method, url, true)
@@ -127,7 +127,7 @@ export class API {
      * @param type тип (пока только альбом)
      * @returns ссылка
      */
-    static searchQuery(album = '', type: string) {
+    static searchQuery(album:string, type: string) {
         let url = "https://api.spotify.com/v1/search?q=remaster "
         if (album !== '') {
             url += "album:" + album

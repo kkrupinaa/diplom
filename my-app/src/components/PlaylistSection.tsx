@@ -8,7 +8,7 @@ export default function SectionPlaylist(props: ISection) {
     const [curMusic, setCurMusic] = useState(props.musicBoxList)
     function onNameClick() {
         if (props.href !== '') {
-            API.fetchApi('GET', props.href + '/tracks', API.UseAPI(new musicList(setCurMusic,new Playlist())), API.playlistQuery())
+            API.fetchApi(props.href + '/tracks', API.UseAPI(new musicList(setCurMusic,new Playlist())), API.playlistQuery())
         }
     }
     return (

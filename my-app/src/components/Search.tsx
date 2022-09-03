@@ -14,7 +14,6 @@ export default function Search() {
     function saveSearchValue(): string {
         let last_search = localStorage.getItem('search_value') as string
         if (last_search === null) last_search = 'Hello'
-        console.log(last_search)
         search(last_search, 'album')
         return last_search
     }
@@ -36,7 +35,7 @@ export default function Search() {
      * @param type тип(альбом)
      */
     function search(album: string, type: string) {
-        API.fetchApi('GET', API.searchQuery(album, type), API.UseAPI(new musicList(setSearchList,new Album())), null)
+        API.fetchApi(API.searchQuery(album, type), API.UseAPI(new musicList(setSearchList,new Album())))
     }
     let searchSection: ISection = {
         text: 'Результаты поиска',

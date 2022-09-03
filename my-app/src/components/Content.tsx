@@ -10,16 +10,19 @@ export default function Content() {
     const [newReleasesList, setNewReleasesList] = useState<IMusic[]>([])
     const [recommendList, setRecommendList] = useState<IMusic[]>([])
     function getNewReleases() {
-        API.fetchApi('GET', 'https://api.spotify.com/v1/browse/new-releases?limit=10', API.UseAPI(new musicList(setNewReleasesList,new Album())), null)
+        API.fetchApi('https://api.spotify.com/v1/browse/new-releases?limit=10', API.UseAPI(new musicList(setNewReleasesList, new Album())))
     }
     function getRecommend() {
-        API.fetchApi('GET', API.recQuary(), API.UseAPI(new musicList(setRecommendList,new Track())), null)
+        API.fetchApi(API.recQuary(), API.UseAPI(new musicList(setRecommendList, new Track())))
     }
     useEffect(() => {
         if (window.location.search.length > 0) {
             const CODE = API.getCode()
-            API.requestAccessToken(API.fetchAccessToken(CODE))
-            window.history.pushState("", "", APIConst.REDIRECT_URI);
+            if (CODE !== null) {
+                API.requestAccessToken(API.fetchAccessToken(CODE))
+                window.history.pushState("", "", APIConst.REDIRECT_URI);
+            }
+            else alert('Не удалось получить код авторизации, перезагрузите страницу')
             localStorage.setItem('devicesAmount', '0')
         }
         if (localStorage.getItem('refresh_token') !== null) {
@@ -27,19 +30,19 @@ export default function Content() {
             getRecommend()
         }
     }, [])
-    const newReleases:ISection = {
+    const newReleases: ISection = {
         text: "Новые релизы",
         id: '1',
         musicBoxList: newReleasesList,
         href: ''
     }
-    const recomendation:ISection = {
+    const recomendation: ISection = {
         text: 'Рекомендации',
         id: '2',
         musicBoxList: recommendList,
         href: ''
     }
-    const  allSections:ISection[]=[newReleases,recomendation]
+    const allSections: ISection[] = [newReleases, recomendation]
     return (
         <main className="content">
             <header className="spoty__header">

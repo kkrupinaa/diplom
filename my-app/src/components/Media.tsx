@@ -7,7 +7,7 @@ import SectionPlaylist from "./PlaylistSection"
 export default function Media() {
     const [mediaSections, setMediaSections] = useState(useContext(SectionContext))
     useEffect(() => {
-        API.fetchApi('GET', 'https://api.spotify.com/v1/me/playlists', API.UseAPI(new sectionList(setMediaSections)), null)
+        API.fetchApi('https://api.spotify.com/v1/me/playlists', API.UseAPI(new sectionList(setMediaSections)))
     }, [])
     return (
         <main className="content">
