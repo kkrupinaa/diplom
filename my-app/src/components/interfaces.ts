@@ -55,3 +55,8 @@ export interface ISectionData{
         href:string
     }[]
 }
+
+export interface ITokenData{
+    access_token:string
+    refresh_token:string
+}

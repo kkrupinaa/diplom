@@ -3,12 +3,13 @@ import { API } from "./API/API";
 import { musicList, Playlist } from "./classes";
 import {ISection } from "./interfaces";
 import MusicBox from "./MusicBox";
+import * as callback from './API/callbacks'
 
 export default function SectionPlaylist(props: ISection) {
     const [curMusic, setCurMusic] = useState(props.musicBoxList)
     function onNameClick() {
         if (props.href !== '') {
-            API.fetchApi(props.href + '/tracks', API.UseAPI(new musicList(setCurMusic,new Playlist())), API.playlistQuery())
+            API.fetchData(props.href + '/tracks', callback.handleData(new musicList(setCurMusic,new Playlist())))
         }
     }
     return (

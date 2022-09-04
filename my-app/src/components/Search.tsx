@@ -3,6 +3,8 @@ import { IMusic, ISection } from "./interfaces"
 import { API } from "./API/API"
 import Section from "./Section"
 import { Album, musicList } from "./classes"
+import * as quary from './API/quary'
+import * as callback from './API/callbacks'
 
 export default function Search() {
     const [searchList, setSearchList] = useState<IMusic[]>([])
@@ -35,7 +37,7 @@ export default function Search() {
      * @param type тип(альбом)
      */
     function search(album: string, type: string) {
-        API.fetchApi(API.searchQuery(album, type), API.UseAPI(new musicList(setSearchList,new Album())))
+        API.fetchData(quary.searchQuery(album, type), callback.handleData(new musicList(setSearchList,new Album())))
     }
     let searchSection: ISection = {
         text: 'Результаты поиска',

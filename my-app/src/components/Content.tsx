@@ -5,21 +5,23 @@ import * as APIConst from "./API/consts"
 import { API } from "./API/API"
 import { Link } from "react-router-dom"
 import { Album, musicList, Track } from "./classes"
+import * as quary from './API/quary'
+import * as callback from './API/callbacks'
 
 export default function Content() {
     const [newReleasesList, setNewReleasesList] = useState<IMusic[]>([])
     const [recommendList, setRecommendList] = useState<IMusic[]>([])
     function getNewReleases() {
-        API.fetchApi('https://api.spotify.com/v1/browse/new-releases?limit=10', API.UseAPI(new musicList(setNewReleasesList, new Album())))
+        API.fetchData('https://api.spotify.com/v1/browse/new-releases?limit=10', callback.handleData(new musicList(setNewReleasesList, new Album())))
     }
     function getRecommend() {
-        API.fetchApi(API.recQuary(), API.UseAPI(new musicList(setRecommendList, new Track())))
+        API.fetchData(quary.recQuary(), callback.handleData(new musicList(setRecommendList, new Track())))
     }
     useEffect(() => {
         if (window.location.search.length > 0) {
             const CODE = API.getCode()
             if (CODE !== null) {
-                API.requestAccessToken(API.fetchAccessToken(CODE))
+                API.fetchToken(quary.accessTokenQuary(CODE))
                 window.history.pushState("", "", APIConst.REDIRECT_URI);
             }
             else alert('Не удалось получить код авторизации, перезагрузите страницу')

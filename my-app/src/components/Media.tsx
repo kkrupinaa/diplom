@@ -3,11 +3,12 @@ import { SectionContext } from "../Context"
 import { API } from "./API/API"
 import { sectionList } from "./classes"
 import SectionPlaylist from "./PlaylistSection"
+import * as callback from './API/callbacks'
 
 export default function Media() {
     const [mediaSections, setMediaSections] = useState(useContext(SectionContext))
     useEffect(() => {
-        API.fetchApi('https://api.spotify.com/v1/me/playlists', API.UseAPI(new sectionList(setMediaSections)))
+        API.fetchData('https://api.spotify.com/v1/me/playlists', callback.handleData(new sectionList(setMediaSections)))
     }, [])
     return (
         <main className="content">
