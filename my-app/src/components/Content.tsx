@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { IMusic, ISection } from "./interfaces"
 import Section from "./Section"
 import * as APIConst from "./API/consts"
@@ -32,18 +32,23 @@ export default function Content() {
             getRecommend()
         }
     }, [])
-    const newReleases: ISection = {
-        text: "Новые релизы",
-        id: '1',
-        musicBoxList: newReleasesList,
-        href: ''
+    const newReleases: ISection = useMemo(() => {
+        return {
+            text: "Новые релизы",
+            id: '1',
+            musicBoxList: newReleasesList,
+            href: ''
+        }
     }
-    const recomendation: ISection = {
-        text: 'Рекомендации',
-        id: '2',
-        musicBoxList: recommendList,
-        href: ''
-    }
+        , [newReleasesList])
+    const recomendation: ISection = useMemo(() => {
+        return {
+            text: 'Рекомендации',
+            id: '2',
+            musicBoxList: recommendList,
+            href: ''
+        }
+    }, [recommendList])
     const allSections: ISection[] = [newReleases, recomendation]
     return (
         <main className="content">
