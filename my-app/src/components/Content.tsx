@@ -36,7 +36,7 @@ export default function Content() {
         return {
             text: "Новые релизы",
             id: '1',
-            musicBoxList: newReleasesList,
+            initialMusicBoxList: newReleasesList,
             href: ''
         }
     }
@@ -45,7 +45,7 @@ export default function Content() {
         return {
             text: 'Рекомендации',
             id: '2',
-            musicBoxList: recommendList,
+            initialMusicBoxList: recommendList,
             href: ''
         }
     }, [recommendList])
@@ -61,7 +61,7 @@ export default function Content() {
             <div className="content-spacing">
                 {
                     allSections.map((item) => (
-                        <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id} href={''} />
+                        <Section text={item.text} key={item.id} initialMusicBoxList={item.initialMusicBoxList} id={item.id} href={''} />
                     )
                     )
                 }

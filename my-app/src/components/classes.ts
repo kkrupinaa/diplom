@@ -102,7 +102,7 @@ export class sectionList extends dataList{
             let elem = data.items[i]
             let newElem: ISection = {
                 text: elem.name,
-                musicBoxList: [],
+                initialMusicBoxList: [],
                 id: elem.id,
                 href: elem.href
             }

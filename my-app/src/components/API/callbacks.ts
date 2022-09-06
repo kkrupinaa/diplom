@@ -1,5 +1,5 @@
 import { dataList } from "../classes"
-import { ITokenData } from "../interfaces"
+import { IError, ITokenData } from "../interfaces"
 import { API } from "./API"
 import * as APIConst from './consts'
 /**
@@ -31,7 +31,7 @@ export function handleData(downloadData:dataList):any{
         }
         else {
             response.json()
-            .then((error:any)=>{
+            .then((error:IError)=>{
                 const reason = error.error
                 alert('Error: '+reason.status+' Message: '+ reason.message)
             })

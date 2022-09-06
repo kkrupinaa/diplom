@@ -7,7 +7,7 @@ export default function Section(props: ISection) {
             <div className="text-content">{props.text}</div>
             <div className="grid-content">
                 {
-                    props.musicBoxList.map((item) => (
+                    props.initialMusicBoxList.map((item) => (
                         <MusicBox
                             photo={item.photo}
                             footer_photo={item.footer_photo}

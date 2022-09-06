@@ -1,6 +1,6 @@
 export interface ISection {
     text: string
-    musicBoxList: IMusic[]
+    initialMusicBoxList: IMusic[]
     id: string
     href:string
 }
@@ -59,4 +59,10 @@ export interface ISectionData{
 export interface ITokenData{
     access_token:string
     refresh_token:string
+}
+export interface IError{
+    error:{
+        status:string
+        message:string
+    }
 }

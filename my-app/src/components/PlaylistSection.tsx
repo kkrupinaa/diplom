@@ -6,7 +6,7 @@ import MusicBox from "./MusicBox";
 import * as callback from './API/callbacks'
 
 export default function SectionPlaylist(props: ISection) {
-    const [curMusic, setCurMusic] = useState(props.musicBoxList)
+    const [curMusic, setCurMusic] = useState(props.initialMusicBoxList)
     function onNameClick() {
         if (props.href !== '') {
             API.fetchData(props.href + '/tracks', callback.handleData(new musicList(setCurMusic,new Playlist())))

@@ -42,7 +42,7 @@ export default function Search() {
     let searchSection: ISection = {
         text: 'Результаты поиска',
         id: '1',
-        musicBoxList: searchList,
+        initialMusicBoxList: searchList,
         href: ''
     }
     const searchSections:ISection[]=[searchSection]
@@ -56,7 +56,7 @@ export default function Search() {
             <div className="content-spacing">
                 {
                     searchSections.map((item) => (
-                        <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id} href={''} />
+                        <Section text={item.text} key={item.id} initialMusicBoxList={item.initialMusicBoxList} id={item.id} href={''} />
                     ))
                 }
             </div>

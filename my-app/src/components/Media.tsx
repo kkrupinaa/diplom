@@ -19,7 +19,7 @@ export default function Media() {
             <div className="content-spacing">
                 {
                     mediaSections.map((item) => (
-                        <SectionPlaylist text={item.text} musicBoxList={item.musicBoxList} key={item.id} id={item.id} href={item.href} />
+                        <SectionPlaylist text={item.text} initialMusicBoxList={item.initialMusicBoxList} key={item.id} id={item.id} href={item.href} />
                     ))
                 }
             </div>
