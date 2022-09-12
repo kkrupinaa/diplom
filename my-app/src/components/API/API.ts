@@ -29,7 +29,7 @@ export class API {
      * Запросить у сервера токен
      * @param body тело запроса
      */
-    static async fetchToken(body:string){
+    static async fetchToken(body: string) {
         try {
             const data = await fetch("https://accounts.spotify.com/api/token", {
                 method: 'POST',
@@ -41,7 +41,7 @@ export class API {
             })
             data.json().then(callbacks.handleTokenResponce)
         } catch (response) {
-            alert('Error: '+ response)
+            alert('Error: ' + response)
         }
     }
     /**
@@ -55,29 +55,29 @@ export class API {
             "&client_id=" + APIConst.CLIENT_ID;
         return body
     }
-/**
- * Запрос серверу
- * @param url ссылка
- * @param callback обработчик ответа запроса
- */
-static fetchData(url: string, callback: () => void){
-    this.accessToken = localStorage.getItem('access_token')
-    fetch(url,{
-        method:'GET',
-        headers:{
-            'Content-Type':'application/json',
-            'Authorization': 'Bearer ' + this.accessToken
-        }
-    })
-    .then(callback)
-    .catch(reason => alert ('Error: '+ reason))
-}
+    /**
+     * Запрос серверу
+     * @param url ссылка
+     * @param callback обработчик ответа запроса
+     */
+    static fetchData(url: string, callback: () => void) {
+        this.accessToken = localStorage.getItem('access_token')
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.accessToken
+            }
+        })
+            .then(callback)
+            .catch(reason => alert('Error: ' + reason))
+    }
 
     /**
      *Получить код авторизации
      */
     static requestAuthorization() {
-        const url=query.autorizationQuary()
+        const url = query.autorizationQuary()
         fetch(url, {
             method: 'GET',
             mode: 'no-cors'

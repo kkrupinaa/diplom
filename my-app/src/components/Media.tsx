@@ -4,12 +4,18 @@ import { API } from "./API/API"
 import { sectionList } from "./classes"
 import SectionPlaylist from "./PlaylistSection"
 import * as callback from './API/callbacks'
+import { useDataFetch } from "./hooks/useDataFetch"
+import { IData } from "./interfaces"
 
 export default function Media() {
     const [mediaSections, setMediaSections] = useState(useContext(SectionContext))
+    const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
+
+    const APIResponse = useDataFetch<IData>('https://api.spotify.com/v1/me/playlists', token)
     useEffect(() => {
-        API.fetchData('https://api.spotify.com/v1/me/playlists', callback.handleData(new sectionList(setMediaSections)))
-    }, [])
+        callback.handleDownloadData(new sectionList(setMediaSections), APIResponse, setToken)
+        // API.fetchData('https://api.spotify.com/v1/me/playlists', callback.handleData(new sectionList(setMediaSections)))
+    }, [APIResponse])
     return (
         <main className="content">
             <header className="spoty__header">

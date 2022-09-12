@@ -1,22 +1,22 @@
 import { useEffect, useMemo, useState } from "react"
-import { IMusic, ISection } from "./interfaces"
+import { IData, IMusic, ISection } from "./interfaces"
 import Section from "./Section"
 import * as APIConst from "./API/consts"
 import { API } from "./API/API"
 import { Link } from "react-router-dom"
 import { Album, musicList, Track } from "./classes"
 import * as quary from './API/quary'
-import * as callback from './API/callbacks'
+import { useDataFetch } from "./hooks/useDataFetch"
+import * as callbacks from './API/callbacks'
 
 export default function Content() {
     const [newReleasesList, setNewReleasesList] = useState<IMusic[]>([])
     const [recommendList, setRecommendList] = useState<IMusic[]>([])
-    function getNewReleases() {
-        API.fetchData('https://api.spotify.com/v1/browse/new-releases?limit=10', callback.handleData(new musicList(setNewReleasesList, new Album())))
-    }
-    function getRecommend() {
-        API.fetchData(quary.recQuary(), callback.handleData(new musicList(setRecommendList, new Track())))
-    }
+    const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
+
+    const recResponse = useDataFetch<IData>(quary.recQuary(), token)
+    const newReleasesResponse = useDataFetch<IData>('https://api.spotify.com/v1/browse/new-releases?limit=10', token)
+
     useEffect(() => {
         if (window.location.search.length > 0) {
             const CODE = API.getCode()
@@ -28,10 +28,12 @@ export default function Content() {
             localStorage.setItem('devicesAmount', '0')
         }
         if (localStorage.getItem('refresh_token') !== null) {
-            getNewReleases()
-            getRecommend()
+            callbacks.handleDownloadData(new musicList(setRecommendList, new Track()), recResponse, setToken)
+            callbacks.handleDownloadData(new musicList(setNewReleasesList, new Album()), newReleasesResponse, setToken)
         }
-    }, [])
+    }, [recResponse, newReleasesResponse])
+
+
     const newReleases: ISection = useMemo(() => {
         return {
             text: "Новые релизы",
