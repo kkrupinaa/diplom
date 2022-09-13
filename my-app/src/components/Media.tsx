@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react"
 import { SectionContext } from "../Context"
-import { API } from "./API/API"
 import { sectionList } from "./classes"
 import SectionPlaylist from "./PlaylistSection"
 import * as callback from './API/callbacks'
@@ -14,7 +13,6 @@ export default function Media() {
     const APIResponse = useDataFetch<IData>('https://api.spotify.com/v1/me/playlists', token)
     useEffect(() => {
         callback.handleDownloadData(new sectionList(setMediaSections), APIResponse, setToken)
-        // API.fetchData('https://api.spotify.com/v1/me/playlists', callback.handleData(new sectionList(setMediaSections)))
     }, [APIResponse])
     return (
         <main className="content">

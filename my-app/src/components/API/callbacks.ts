@@ -1,7 +1,8 @@
 import { dataList } from "../classes"
 import { IError, ITokenData } from "../interfaces"
-import { API } from "./API"
+import * as API from "./API"
 import * as APIConst from './consts'
+import * as query from './query'
 /**
  *Обработка успешного запроса токена
 * @param response ответ сервера
@@ -27,7 +28,7 @@ export function handleData(downloadData: dataList): any {
                 .then((data: any) => downloadData.formList(data))
         }
         else if (response.status === APIConst.HTTP_CODES.NO_TOKEN) {
-            API.fetchToken(API.refreshAccessToken())
+            API.fetchToken(query.refreshTokenQuery())
         }
         else {
             response.json()
@@ -50,7 +51,7 @@ export function handleDownloadData(downloadData: dataList, response: any, tokenF
             downloadData.formList(response.data)
         }
         else if (response.responseStatus === APIConst.HTTP_CODES.NO_TOKEN) {
-            API.fetchToken(API.refreshAccessToken())
+            API.fetchToken(query.refreshTokenQuery())
             tokenFunc(localStorage.getItem('refresh_token'))
         }
         else {

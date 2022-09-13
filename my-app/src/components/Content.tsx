@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from "react"
 import { IData, IMusic, ISection } from "./interfaces"
 import Section from "./Section"
 import * as APIConst from "./API/consts"
-import { API } from "./API/API"
+import * as API from "./API/API"
 import { Link } from "react-router-dom"
 import { Album, musicList, Track } from "./classes"
-import * as quary from './API/quary'
+import * as query from './API/query'
 import { useDataFetch } from "./hooks/useDataFetch"
 import * as callbacks from './API/callbacks'
 
@@ -14,14 +14,14 @@ export default function Content() {
     const [recommendList, setRecommendList] = useState<IMusic[]>([])
     const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
 
-    const recResponse = useDataFetch<IData>(quary.recQuary(), token)
+    const recResponse = useDataFetch<IData>(query.recQuery(), token)
     const newReleasesResponse = useDataFetch<IData>('https://api.spotify.com/v1/browse/new-releases?limit=10', token)
 
     useEffect(() => {
         if (window.location.search.length > 0) {
-            const CODE = API.getCode()
+            const CODE = query.getCode()
             if (CODE !== null) {
-                API.fetchToken(quary.accessTokenQuary(CODE))
+                API.fetchToken(query.accessTokenQuery(CODE))
                 window.history.pushState("", "", APIConst.REDIRECT_URI);
             }
             else alert('Не удалось получить код авторизации, перезагрузите страницу')

@@ -61,27 +61,6 @@ export abstract class dataList {
     abstract formList(data: any): void
 }
 
-export function formMusicList(type: Music, data: IData): IMusic[] {
-    type.setElements(data)
-    type.setFirstTitle()
-    type.setSecondTitle()
-    type.setPhoto()
-    type.setFooterPhoto()
-    type.setId()
-    let newList: IMusic[] = []
-    for (let i = 0; i < type.elements.length; i++) {
-        let newElem: IMusic = {
-            photo: type.photo[i],
-            footer_photo: type.footer_photo[i],
-            id: type.id[i],
-            first_title: type.first_title[i],
-            second_title: type.second_title[i]
-        }
-        newList.push(newElem)
-    }
-    return newList
-}
-
 export class musicList extends dataList {
     setFunc: React.Dispatch<React.SetStateAction<IMusic[]>>
     type: Music

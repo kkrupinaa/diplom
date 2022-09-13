@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { IMusic, ISection } from "./interfaces"
-import { API } from "./API/API"
+import * as API from "./API/API"
 import Section from "./Section"
 import { Album, musicList } from "./classes"
-import * as quary from './API/quary'
+import * as query from './API/query'
 import * as callback from './API/callbacks'
 
 export default function Search() {
@@ -37,7 +37,7 @@ export default function Search() {
      * @param type тип(альбом)
      */
     function search(album: string, type: string) {
-        API.fetchData(quary.searchQuery(album, type), callback.handleData(new musicList(setSearchList,new Album())))
+        API.fetchData(query.searchQuery(album, type), callback.handleData(new musicList(setSearchList, new Album())))
     }
     let searchSection: ISection = {
         text: 'Результаты поиска',
@@ -45,7 +45,7 @@ export default function Search() {
         initialMusicBoxList: searchList,
         href: ''
     }
-    const searchSections:ISection[]=[searchSection]
+    const searchSections: ISection[] = [searchSection]
     return (
         <main className="content">
             <header className="spoty__header">

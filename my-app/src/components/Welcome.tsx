@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { API } from "./API/API"
+import * as API from "./API/API"
 export default function Welcome() {
     return (
         <main className="content">
