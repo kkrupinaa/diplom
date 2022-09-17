@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 import { SectionContext } from "../Context"
 import { sectionList } from "./classes"
 import SectionPlaylist from "./PlaylistSection"
@@ -11,7 +11,7 @@ export default function Media() {
     const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
 
     const APIResponse = useDataFetch<IData>('https://api.spotify.com/v1/me/playlists', token)
-    useEffect(() => {
+    useMemo(() => {
         callback.handleDownloadData(new sectionList(setMediaSections), APIResponse, setToken)
     }, [APIResponse])
     return (

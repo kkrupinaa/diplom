@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-
+import * as API from '../API/API'
 
 export type UseDataFetch<T> = {
     data: T | undefined
@@ -8,27 +8,7 @@ export type UseDataFetch<T> = {
     loadStatus: Status
 }
 export type Status = "loading" | "loaded" | "error"
-/**
- * Запрос серверу
- * @param url ссылка
- */
-export const fetchData = async (url: string, signal: AbortSignal) => {
-    const accessToken = localStorage.getItem('access_token')
-    const res = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + accessToken
-        },
-        signal: signal
-    })
-    const status = res.status
-    const data = await res.json()
-    return {
-        data: data,
-        responseStatus: status
-    }
-}
+
 export const useDataFetch = <T>(url: string, token: string | null): UseDataFetch<T> => {
     const [result, setResult] = useState<UseDataFetch<T>>({
         data: undefined,
@@ -44,7 +24,7 @@ export const useDataFetch = <T>(url: string, token: string | null): UseDataFetch
             }
         })
         const controller = new AbortController()
-        fetchData(url, controller.signal)
+        API.fetchData(url, controller.signal)
             .then((data) => {
                 setResult(
                     {

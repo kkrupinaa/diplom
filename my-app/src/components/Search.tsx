@@ -1,24 +1,16 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { IMusic, ISection } from "./interfaces"
-import * as API from "./API/API"
 import Section from "./Section"
 import { Album, musicList } from "./classes"
 import * as query from './API/query'
 import * as callback from './API/callbacks'
+import { useDataFetch } from "./hooks/useDataFetch"
 
 export default function Search() {
     const [searchList, setSearchList] = useState<IMusic[]>([])
-    const [searchValue, setSearchValue] = useState<string>('')
-    /**
-     *Восстановить последний поисковый запрос
-     * @returns Последний поисковый запрос
-     */
-    function saveSearchValue(): string {
-        let last_search = localStorage.getItem('search_value') as string
-        if (last_search === null) last_search = 'Hello'
-        search(last_search, 'album')
-        return last_search
-    }
+    const [searchValue, setSearchValue] = useState<string>(localStorage.getItem('search_value') as string)
+    const [searchUrl, setSearchUrl] = useState<string>(localStorage.getItem('search_query') as string)
+    const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
     /**
      *Обработчик ввода в поисковую строку
      * @param e event
@@ -37,8 +29,14 @@ export default function Search() {
      * @param type тип(альбом)
      */
     function search(album: string, type: string) {
-        API.fetchData(query.searchQuery(album, type), callback.handleData(new musicList(setSearchList, new Album())))
+        const newQuery = query.searchQuery(album, type)
+        setSearchUrl(newQuery)
+        localStorage.setItem('search_query', newQuery)
     }
+    const searchData = useDataFetch(searchUrl, token)
+    useMemo(() => {
+        callback.handleDownloadData(new musicList(setSearchList, new Album()), searchData, setToken)
+    }, [searchData])
     let searchSection: ISection = {
         text: 'Результаты поиска',
         id: '1',
@@ -50,7 +48,7 @@ export default function Search() {
         <main className="content">
             <header className="spoty__header">
                 <div>
-                    <input type="search" className="header-search" value={saveSearchValue()} onChange={onChangeInput} />
+                    <input type="search" className="header-search" value={searchValue} onChange={onChangeInput} />
                 </div>
             </header>
             <div className="content-spacing">

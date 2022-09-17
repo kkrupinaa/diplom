@@ -27,13 +27,14 @@ export default function Content() {
             else alert('Не удалось получить код авторизации, перезагрузите страницу')
             localStorage.setItem('devicesAmount', '0')
         }
-        if (localStorage.getItem('refresh_token') !== null) {
-            callbacks.handleDownloadData(new musicList(setRecommendList, new Track()), recResponse, setToken)
-            callbacks.handleDownloadData(new musicList(setNewReleasesList, new Album()), newReleasesResponse, setToken)
-        }
-    }, [recResponse, newReleasesResponse])
+    }, [])
 
-
+    useMemo(() => {
+        callbacks.handleDownloadData(new musicList(setRecommendList, new Track()), recResponse, setToken)
+    }, [recResponse])
+    useMemo(() => {
+        callbacks.handleDownloadData(new musicList(setNewReleasesList, new Album()), newReleasesResponse, setToken)
+    }, [newReleasesResponse])
     const newReleases: ISection = useMemo(() => {
         return {
             text: "Новые релизы",

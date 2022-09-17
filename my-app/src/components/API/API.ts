@@ -23,19 +23,23 @@ export async function fetchToken(body: string) {
 /**
  * Запрос серверу
  * @param url ссылка
- * @param callback обработчик ответа запроса
  */
-export function fetchData(url: string, callback: () => void) {
+export const fetchData = async (url: string, signal: AbortSignal) => {
     const accessToken = localStorage.getItem('access_token')
-    fetch(url, {
+    const res = await fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + accessToken
-        }
+        },
+        signal: signal
     })
-        .then(callback)
-        .catch(reason => alert('Error: ' + reason))
+    const status = res.status
+    const data = await res.json()
+    return {
+        data: data,
+        responseStatus: status
+    }
 }
 /**
  *Получить код авторизации
