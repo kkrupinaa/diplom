@@ -7,7 +7,7 @@ export type UseDataFetch<T> = {
     errorMessage: string
     loadStatus: Status
 }
-export type Status = "loading" | "loaded" | "error"
+export type Status = "loading" | "loaded" | "error" | 'cancelled'
 
 export const useDataFetch = <T>(url: string, token: string | null): UseDataFetch<T> => {
     const [result, setResult] = useState<UseDataFetch<T>>({
@@ -36,13 +36,23 @@ export const useDataFetch = <T>(url: string, token: string | null): UseDataFetch
                 )
             })
             .catch((reason) => {
-                setResult({
-                    data: undefined,
-                    errorMessage: reason,
-                    loadStatus: 'error',
-                    responseStatus: undefined
+                if (controller.signal.aborted) {
+                    setResult({
+                        data: undefined,
+                        errorMessage: '',
+                        loadStatus: 'cancelled',
+                        responseStatus: undefined
+                    })
                 }
-                )
+                else {
+                    setResult({
+                        data: undefined,
+                        errorMessage: reason,
+                        loadStatus: 'error',
+                        responseStatus: undefined
+                    }
+                    )
+                }
             })
         return () => {
             controller.abort()
