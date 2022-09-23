@@ -8,11 +8,10 @@ import { IData } from "./interfaces"
 
 export default function Media() {
     const [mediaSections, setMediaSections] = useState(useContext(SectionContext))
-    const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
 
-    const APIResponse = useDataFetch<IData>('https://api.spotify.com/v1/me/playlists', token)
+    const APIResponse = useDataFetch<IData>('https://api.spotify.com/v1/me/playlists')
     useMemo(() => {
-        callback.handleDownloadData(new sectionList(setMediaSections), APIResponse, setToken)
+        callback.handleDownloadData(new sectionList(setMediaSections), APIResponse)
     }, [APIResponse])
     return (
         <main className="content">

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { IData, IMusic, ISection } from "./interfaces"
 import Section from "./Section"
 import * as APIConst from "./API/consts"
@@ -8,20 +8,22 @@ import { Album, musicList, Track } from "./classes"
 import * as query from './API/query'
 import { useDataFetch } from "./hooks/useDataFetch"
 import * as callbacks from './API/callbacks'
+import { TokenContext } from "../Context"
 
 export default function Content() {
     const [newReleasesList, setNewReleasesList] = useState<IMusic[]>([])
     const [recommendList, setRecommendList] = useState<IMusic[]>([])
-    const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
+    const [token, setToken] = useContext(TokenContext)
 
-    const recResponse = useDataFetch<IData>(query.recQuery(), token)
-    const newReleasesResponse = useDataFetch<IData>('https://api.spotify.com/v1/browse/new-releases?limit=10', token)
+    const recResponse = useDataFetch<IData>(query.recQuery())
+    const newReleasesResponse = useDataFetch<IData>('https://api.spotify.com/v1/browse/new-releases?limit=10')
 
     useEffect(() => {
         if (window.location.search.length > 0) {
             const CODE = query.getCode()
             if (CODE !== null) {
                 API.fetchToken(query.accessTokenQuery(CODE))
+                setToken(localStorage.getItem('access_token'))
                 window.history.pushState("", "", APIConst.REDIRECT_URI);
             }
             else alert('Не удалось получить код авторизации, перезагрузите страницу')
@@ -30,10 +32,10 @@ export default function Content() {
     }, [])
 
     useMemo(() => {
-        callbacks.handleDownloadData(new musicList(setRecommendList, new Track()), recResponse, setToken)
+        callbacks.handleDownloadData(new musicList(setRecommendList, new Track()), recResponse)
     }, [recResponse])
     useMemo(() => {
-        callbacks.handleDownloadData(new musicList(setNewReleasesList, new Album()), newReleasesResponse, setToken)
+        callbacks.handleDownloadData(new musicList(setNewReleasesList, new Album()), newReleasesResponse)
     }, [newReleasesResponse])
     const newReleases: ISection = useMemo(() => {
         return {

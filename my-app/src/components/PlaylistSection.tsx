@@ -7,10 +7,9 @@ import { useDataFetch } from "./hooks/useDataFetch";
 
 export default function SectionPlaylist(props: ISection) {
     const [curMusic, setCurMusic] = useState(props.initialMusicBoxList)
-    const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
-    const playlistData = useDataFetch(props.href + '/tracks', token)
+    const playlistData = useDataFetch(props.href + '/tracks')
     useMemo(() => {
-        callback.handleDownloadData(new musicList(setCurMusic, new Playlist()), playlistData, setToken)
+        callback.handleDownloadData(new musicList(setCurMusic, new Playlist()), playlistData)
     }, [playlistData])
     return (
         <section className="spoty-section">

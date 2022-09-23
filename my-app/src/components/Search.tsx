@@ -10,7 +10,6 @@ export default function Search() {
     const [searchList, setSearchList] = useState<IMusic[]>([])
     const [searchValue, setSearchValue] = useState<string>(localStorage.getItem('search_value') as string)
     const [searchUrl, setSearchUrl] = useState<string>(localStorage.getItem('search_query') as string)
-    const [token, setToken] = useState<string | null>(localStorage.getItem('refresh_token'))
     /**
      *Обработчик ввода в поисковую строку
      * @param e event
@@ -33,9 +32,9 @@ export default function Search() {
         setSearchUrl(newQuery)
         localStorage.setItem('search_query', newQuery)
     }
-    const searchData = useDataFetch(searchUrl, token)
+    const searchData = useDataFetch(searchUrl)
     useMemo(() => {
-        callback.handleDownloadData(new musicList(setSearchList, new Album()), searchData, setToken)
+        callback.handleDownloadData(new musicList(setSearchList, new Album()), searchData)
     }, [searchData])
     let searchSection: ISection = {
         text: 'Результаты поиска',

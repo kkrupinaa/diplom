@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { TokenContext } from "../../Context"
 import * as API from '../API/API'
+import * as APIConst from '../API/consts'
+import * as query from '../API/query'
 
 export type UseDataFetch<T> = {
     data: T | undefined
@@ -9,13 +12,14 @@ export type UseDataFetch<T> = {
 }
 export type Status = "loading" | "loaded" | "error" | 'cancelled'
 
-export const useDataFetch = <T>(url: string, token: string | null): UseDataFetch<T> => {
+export const useDataFetch = <T>(url: string): UseDataFetch<T> => {
     const [result, setResult] = useState<UseDataFetch<T>>({
         data: undefined,
         responseStatus: undefined,
         errorMessage: '',
         loadStatus: 'loading'
     })
+    const [token, setToken] = useContext(TokenContext)
     useEffect(() => {
         setResult((prev) => {
             return {
@@ -34,6 +38,10 @@ export const useDataFetch = <T>(url: string, token: string | null): UseDataFetch
                         loadStatus: 'loaded'
                     }
                 )
+                if (data.responseStatus === APIConst.HTTP_CODES.NO_TOKEN) {
+                    API.fetchToken(query.refreshTokenQuery())
+                    setToken(localStorage.getItem('refresh_token'))
+                }
             })
             .catch((reason) => {
                 if (controller.signal.aborted) {
@@ -57,6 +65,6 @@ export const useDataFetch = <T>(url: string, token: string | null): UseDataFetch
         return () => {
             controller.abort()
         }
-    }, [url, token])
+    }, [url, token, setToken])
     return result
 }
