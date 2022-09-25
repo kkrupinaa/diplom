@@ -1,46 +1,19 @@
-import React, { useState } from "react";
-import { API } from "./API/API";
-import { IMusic, ISection } from "./interfaces";
+import { useMemo, useState } from "react";
+import { musicList, Playlist } from "./classes";
+import { ISection } from "./interfaces";
 import MusicBox from "./MusicBox";
-import * as APIConst from "./API/consts"
+import * as callback from './API/callbacks'
+import { useDataFetch } from "./hooks/useDataFetch";
 
 export default function SectionPlaylist(props: ISection) {
-    const [curMusic, setCurMusic] = useState(props.musicBoxList)
-
-    function handlePlaylistItemsResponce(this: XMLHttpRequest) {
-        if (this.status === APIConst.HTTP_CODES.OK) {
-            let newList: IMusic[] = []
-            const data = JSON.parse(this.responseText)
-            for (let i = 0; i < data.items.length; i++) {
-                let elem = data.items[i]
-                let newElem: IMusic = {
-                    photo: elem.track.album.images[1].url,
-                    footer_photo: elem.track.album.images[2].url,
-                    first_title: elem.track.name,
-                    second_title: elem.track.artists[0].name,
-                    id: elem.track.id
-                }
-                newList.push(newElem)
-            }
-            setCurMusic(newList)
-        }
-        else {
-            if (this.status === APIConst.HTTP_CODES.NO_TOKEN) {
-                API.requestAccessToken(API.refreshAccessToken())
-            }
-            else {
-                alert(this.responseText);
-            }
-        }
-    }
-    function onNameClick() {
-        if (props.href !== '') {
-            API.fetchApi('GET', props.href + '/tracks', handlePlaylistItemsResponce, API.playlistQuery())
-        }
-    }
+    const [curMusic, setCurMusic] = useState(props.initialMusicBoxList)
+    const playlistData = useDataFetch(props.href + '/tracks')
+    useMemo(() => {
+        callback.handleDownloadData(new musicList(setCurMusic, new Playlist()), playlistData)
+    }, [playlistData])
     return (
         <section className="spoty-section">
-            <div className="text-content" onClick={onNameClick}>{props.text}</div>
+            <div className="text-content">{props.text}</div>
             <div className="grid-content">
                 {
                     curMusic.map((item) => (

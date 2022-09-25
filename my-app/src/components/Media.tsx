@@ -1,40 +1,18 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 import { SectionContext } from "../Context"
-import { API } from "./API/API"
-import { ISection } from "./interfaces"
-import * as APIConst from "./API/consts"
+import { sectionList } from "./classes"
 import SectionPlaylist from "./PlaylistSection"
+import * as callback from './API/callbacks'
+import { useDataFetch } from "./hooks/useDataFetch"
+import { IData } from "./interfaces"
 
 export default function Media() {
-    const [mediaSections, setMediaSections] = useState(useContext(SectionContext))
-    useEffect(() => {
-        API.fetchApi('GET', 'https://api.spotify.com/v1/me/playlists', handlePlaylistResponce, null)
-        function handlePlaylistResponce(this: XMLHttpRequest) {
-            if (this.status === APIConst.HTTP_CODES.OK) {
-                let newList: ISection[] = []
-                const data = JSON.parse(this.responseText)
-                for (let i = 0; i < data.items.length; i++) {
-                    let elem = data.items[i]
-                    let newElem: ISection = {
-                        text: elem.name,
-                        musicBoxList: [],
-                        id: elem.id,
-                        href: elem.href
-                    }
-                    newList.push(newElem)
-                }
-                setMediaSections(newList)
-            }
-            else {
-                if (this.status === APIConst.HTTP_CODES.NO_TOKEN) {
-                    API.requestAccessToken(API.refreshAccessToken())
-                }
-                else {
-                    alert(this.responseText);
-                }
-            }
-        }
-    }, [])
+    const [mediaSections, setMediaSections] = useContext(SectionContext)
+
+    const APIResponse = useDataFetch<IData>('https://api.spotify.com/v1/me/playlists')
+    useMemo(() => {
+        callback.handleDownloadData(new sectionList(setMediaSections), APIResponse)
+    }, [APIResponse, setMediaSections])
     return (
         <main className="content">
             <header className="spoty__header">
@@ -44,7 +22,7 @@ export default function Media() {
             <div className="content-spacing">
                 {
                     mediaSections.map((item) => (
-                        <SectionPlaylist text={item.text} musicBoxList={item.musicBoxList} key={item.id} id={item.id} href={item.href} />
+                        <SectionPlaylist text={item.text} initialMusicBoxList={item.initialMusicBoxList} key={item.id} id={item.id} href={item.href} />
                     ))
                 }
             </div>

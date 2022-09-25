@@ -1,113 +1,60 @@
-import { useEffect, useState } from "react"
-import { IMusic, ISection } from "./interfaces"
+import { useContext, useEffect, useMemo, useState } from "react"
+import { IData, IMusic, ISection } from "./interfaces"
 import Section from "./Section"
 import * as APIConst from "./API/consts"
-import { API } from "./API/API"
+import * as API from "./API/API"
 import { Link } from "react-router-dom"
+import { Album, musicList, Track } from "./classes"
+import * as query from './API/query'
+import { useDataFetch } from "./hooks/useDataFetch"
+import * as callbacks from './API/callbacks'
+import { TokenContext } from "../Context"
 
 export default function Content() {
-    const [allSections, setAllSections] = useState<ISection[]>([])
     const [newReleasesList, setNewReleasesList] = useState<IMusic[]>([])
     const [recommendList, setRecommendList] = useState<IMusic[]>([])
+    const [token, setToken] = useContext(TokenContext)
+
+    const recResponse = useDataFetch<IData>(query.recQuery())
+    const newReleasesResponse = useDataFetch<IData>('https://api.spotify.com/v1/browse/new-releases?limit=10')
+
     useEffect(() => {
         if (window.location.search.length > 0) {
-            const CODE = API.getCode()
-            API.requestAccessToken(API.fetchAccessToken(CODE))
-            window.history.pushState("", "", APIConst.REDIRECT_URI);
+            const CODE = query.getCode()
+            if (CODE !== null) {
+                API.fetchToken(query.accessTokenQuery(CODE))
+                setToken(localStorage.getItem('access_token'))
+                window.history.pushState("", "", APIConst.REDIRECT_URI);
+            }
+            else alert('Не удалось получить код авторизации, перезагрузите страницу')
             localStorage.setItem('devicesAmount', '0')
         }
-        if (localStorage.getItem('refresh_token') !== null) {
-            getNewReleases()
-            getRecommend()
-        }
-
-        function getNewReleases() {
-            API.fetchApi('GET', 'https://api.spotify.com/v1/browse/new-releases?limit=10', processNewReleases, null)
-        }
-        /**
-         *Обработка ответа сервера на запрос о новых релизах
-         * @param this ответ сервера
-         */
-        function processNewReleases(this: XMLHttpRequest) {
-            if (this.status === APIConst.HTTP_CODES.OK) {
-                const data = JSON.parse(this.responseText)
-                let newList: IMusic[] = []
-                for (let i = 0; i < data.albums.items.length; i++) {
-                    const elem = data.albums.items[i]
-                    let newElem: IMusic
-                    newElem = {
-                        photo: elem.images[1].url,
-                        footer_photo: elem.images[2].url,
-                        id: String(i),
-                        first_title: elem.name,
-                        second_title: elem.artists[0].name
-                    }
-                    newList.push(newElem)
-                }
-                setNewReleasesList(newList)
-            }
-            else {
-                if (this.status === APIConst.HTTP_CODES.NO_TOKEN) {
-                    API.requestAccessToken(API.refreshAccessToken())
-                }
-                else {
-                    alert(this.responseText);
-                }
-            }
-        }
-        function getRecommend() {
-            API.fetchApi('GET', API.recQuary(), processRecommendResponse, null)
-        }
-        /**
-         * Обработка ответа сервера на запрос о рекомендациях
-         * @param this ответ сервера
-         */
-        function processRecommendResponse(this: XMLHttpRequest): void {
-            if (this.status === APIConst.HTTP_CODES.OK) {
-                const data = JSON.parse(this.responseText)
-                let newList: IMusic[]
-                newList = []
-                for (let i = 0; i < data.tracks.length; i++) {
-                    const elem = data.tracks[i].album
-                    let newElem: IMusic
-                    newElem = {
-                        photo: elem.images[1].url,
-                        footer_photo: elem.images[2].url,
-                        id: String(i),
-                        first_title: elem.name,
-                        second_title: elem.artists[0].name
-                    }
-                    newList.push(newElem)
-                }
-                setRecommendList(newList)
-            }
-            else {
-                if (this.status === APIConst.HTTP_CODES.NO_TOKEN) {
-                    API.requestAccessToken(API.refreshAccessToken())
-                }
-                else {
-                    alert(this.responseText);
-                }
-            }
-        }
     }, [])
-    useEffect(() => {
-        let newReleases: ISection
-        newReleases = {
+
+    useMemo(() => {
+        callbacks.handleDownloadData(new musicList(setRecommendList, new Track()), recResponse)
+    }, [recResponse])
+    useMemo(() => {
+        callbacks.handleDownloadData(new musicList(setNewReleasesList, new Album()), newReleasesResponse)
+    }, [newReleasesResponse])
+    const newReleases: ISection = useMemo(() => {
+        return {
             text: "Новые релизы",
             id: '1',
-            musicBoxList: newReleasesList,
+            initialMusicBoxList: newReleasesList,
             href: ''
         }
-        let recomendation: ISection
-        recomendation = {
+    }
+        , [newReleasesList])
+    const recomendation: ISection = useMemo(() => {
+        return {
             text: 'Рекомендации',
             id: '2',
-            musicBoxList: recommendList,
+            initialMusicBoxList: recommendList,
             href: ''
         }
-        setAllSections([newReleases, recomendation])
-    }, [recommendList, newReleasesList])
+    }, [recommendList])
+    const allSections: ISection[] = [newReleases, recomendation]
     return (
         <main className="content">
             <header className="spoty__header">
@@ -119,7 +66,7 @@ export default function Content() {
             <div className="content-spacing">
                 {
                     allSections.map((item) => (
-                        <Section text={item.text} key={item.id} musicBoxList={item.musicBoxList} id={item.id} href={''} />
+                        <Section text={item.text} key={item.id} initialMusicBoxList={item.initialMusicBoxList} id={item.id} href={''} />
                     )
                     )
                 }
