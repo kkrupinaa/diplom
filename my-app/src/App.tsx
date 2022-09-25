@@ -15,7 +15,7 @@ import NotFound from "./components/NotFound";
 function App() {
   const [footerStyle, setFooterStyle] = useState<IFooter>({ firstTitle: 'Наведите на трэк', secondTitle: 'Нажмите Play', photo: default_photo, liked: false })
   const [curTrack, setCurtrack] = useState<HTMLImageElement>(new Image())
-  const [mediaSections] = useState<ISection[]>([])
+  const [mediaSections, setMediaSections] = useState<ISection[]>([])
   const [token, setToken] = useState<string | null>('')
   useEffect(() => {
     const savedFooterStyle = localStorage.getItem('footerStyle')
@@ -29,7 +29,7 @@ function App() {
       <TokenContext.Provider value={[token, setToken]}>
         <FooterContext.Provider value={setFooterStyle}>
           <CommonContext.Provider value={[curTrack, setCurtrack]}>
-            <SectionContext.Provider value={mediaSections}>
+            <SectionContext.Provider value={[mediaSections, setMediaSections]}>
               <Routes>
                 <Route path='/' element={<Welcome />} />
                 <Route path="/callback" element={<Content />} />

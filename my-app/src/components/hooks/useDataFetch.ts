@@ -3,17 +3,10 @@ import { TokenContext } from "../../Context"
 import * as API from '../API/API'
 import * as APIConst from '../API/consts'
 import * as query from '../API/query'
+import * as types from '../types'
 
-export type UseDataFetch<T> = {
-    data: T | undefined
-    responseStatus: number | undefined
-    errorMessage: string
-    loadStatus: Status
-}
-export type Status = "loading" | "loaded" | "error" | 'cancelled'
-
-export const useDataFetch = <T>(url: string): UseDataFetch<T> => {
-    const [result, setResult] = useState<UseDataFetch<T>>({
+export const useDataFetch = <T>(url: string): types.UseDataFetch<T> => {
+    const [result, setResult] = useState<types.UseDataFetch<T>>({
         data: undefined,
         responseStatus: undefined,
         errorMessage: '',
